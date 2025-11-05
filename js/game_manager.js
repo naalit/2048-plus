@@ -11,14 +11,14 @@ function GameManager(size_x, size_y, InputManager, Actuator, StorageManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
 
-  this.setup();
+  this.setup(false);
 }
 
 // Restart the game
 GameManager.prototype.restart = function () {
-  this.storageManager.clearGameState();
+  this.storageManager.clearGameState(this.size_x, this.size_y);
   this.actuator.continueGame(); // Clear the game won/lost message
-  this.setup();
+  this.setup(true);
 };
 
 // Keep playing after winning (allows going over 2048)
@@ -33,8 +33,8 @@ GameManager.prototype.isGameTerminated = function () {
 };
 
 // Set up the game
-GameManager.prototype.setup = function () {
-  var previousState = this.storageManager.getGameState();
+GameManager.prototype.setup = function (useSize) {
+  var previousState = useSize ? this.storageManager.getGameState(this.size_x, this.size_y) : this.storageManager.getGameStateNoSize();
 
   // Reload the game from a previous game if present
   if (previousState) {
@@ -89,9 +89,9 @@ GameManager.prototype.actuate = function () {
 
   // Clear the state when the game is over (game over only, not win)
   if (this.over) {
-    this.storageManager.clearGameState();
+    this.storageManager.clearGameState(this.size_x, this.size_y);
   } else {
-    this.storageManager.setGameState(this.serialize());
+    this.storageManager.setGameState(this.serialize(), this.size_x, this.size_y);
   }
 
   this.actuator.actuate(this.grid, {

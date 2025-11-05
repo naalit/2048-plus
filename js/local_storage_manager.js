@@ -58,15 +58,26 @@ LocalStorageManager.prototype.setBestScore = function (score, size_x, size_y) {
 };
 
 // Game state getters/setters and clearing
-LocalStorageManager.prototype.getGameState = function () {
-  var stateJSON = this.storage.getItem(this.gameStateKey);
+LocalStorageManager.prototype.getGameState = function (size_x, size_y) {
+  console.log("getting game state for " + size_x + "x" + size_y);
+  var stateJSON = this.storage.getItem(this.gameStateKey + size_x + "x" + size_y);
   return stateJSON ? JSON.parse(stateJSON) : null;
 };
 
-LocalStorageManager.prototype.setGameState = function (gameState) {
-  this.storage.setItem(this.gameStateKey, JSON.stringify(gameState));
+LocalStorageManager.prototype.getGameStateNoSize = function () {
+  console.log("setting game state for `any`");
+  var stateJSON = this.storage.getItem(this.gameStateKey + "any");
+  return stateJSON ? JSON.parse(stateJSON) : null;
 };
 
-LocalStorageManager.prototype.clearGameState = function () {
-  this.storage.removeItem(this.gameStateKey);
+LocalStorageManager.prototype.setGameState = function (gameState, size_x, size_y) {
+  console.log("setting game state for " + size_x + "x" + size_y);
+  this.storage.setItem(this.gameStateKey + size_x + "x" + size_y, JSON.stringify(gameState));
+  this.storage.setItem(this.gameStateKey + "any", JSON.stringify(gameState));
+};
+
+LocalStorageManager.prototype.clearGameState = function (size_x, size_y) {
+  console.log("clearing game state for " + size_x + "x" + size_y);
+  this.storage.removeItem(this.gameStateKey + size_x + "x" + size_y);
+  this.storage.removeItem(this.gameStateKey + "any");
 };

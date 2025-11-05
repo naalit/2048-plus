@@ -28,6 +28,7 @@ HTMLActuator.prototype.createGrid = function (size_x, size_y) {
 
   let buttons = document.querySelector(".size-buttons");
   this.clearContainer(buttons);
+  let self = this;
   for (const y of [2, 3, 4, 5]) {
     for (const x of [2, 3, 4, 5]) {
       let button = document.createElement("a");
@@ -40,7 +41,8 @@ HTMLActuator.prototype.createGrid = function (size_x, size_y) {
         let fn = function(ev) {
           this.manager.size_x = x;
           this.manager.size_y = y;
-          this.manager.restart();
+          this.manager.setup(true);
+          self.continueGame();
         };
         button.addEventListener("click", fn.bind(this));
         button.addEventListener(this.eventTouchend, fn.bind(this));
